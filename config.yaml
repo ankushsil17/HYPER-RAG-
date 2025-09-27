@@ -1,0 +1,55 @@
+seed: 42
+# Models (choose the small ones by default for Kaggle)
+llm_model_name: "Qwen/Qwen2.5-3B-Instruct" # or "microsoft/Phi-3-mini-4k-instruct"
+embed_model_name: "sentence-transformers/all-MiniLM-L6-v2"
+rerank_model_name: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+
+datasets:
+    # - name: squad
+    #   subset_size: 1
+    # - name: trivia_qa
+    #   subset_size: 1
+    - name: covid_qa_deepset
+      subset_size: 100
+
+
+# Chunking
+# chunk_sizes: [256, 512, 1024] # in words (approx)
+chunk_sizes: [512]
+# chunk_overlap_words: [0, 100] # 0 ~ 0%, 100 ~ ~20% at 512
+chunk_overlap_words: [100]
+
+
+# Retrieval
+retrievers: ["dense", "bm25", "hybrid"]
+# retrievers: ["dense"]
+# top-k sweep
+# top_k_list: [1, 3, 5, 10, 20]
+top_k_list: [1,3]
+
+
+
+# Reranking
+# use_rerank: [false, true]
+use_rerank: [false,true]
+rerank_depth: 50 # how many to rerank before trimming to top-k
+
+
+# Generation
+gen:
+    max_new_tokens: 128
+    temperature: 0.01
+    top_p: 0.95
+
+
+# Evaluation weights for QAGL (sum is not required)
+weights:
+    f1: 1.0
+    semantic: 1.0
+    inv_latency: 1.0
+
+
+# Logging & output
+results_csv: "results_stg1.csv"
+plots_dir: "plots"

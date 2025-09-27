@@ -4,42 +4,6 @@ import random
 random.seed(42)
 
 
-def load_squad(n=500):
-    ds = load_dataset("squad", split="train")
-    ds = ds.shuffle(seed=42).select(range(min(n, len(ds))))
-    out = []
-    for i, row in enumerate(ds):
-        out.append({
-            "id": f"squad_{i}",
-            "question": row["question"],
-            "context": row["context"],
-            "answers": [a.strip() for a in row["answers"]["text"] if a.strip()]
-        })
-    return out
-
-
-# def load_trivia_qa_rc(n=300):
-#     # rc (reading comprehension) has evidence docs in context
-#     ds = load_dataset("trivia_qa", "rc", split="train")
-#     ds = ds.shuffle(seed=42).select(range(min(n, len(ds))))
-#     out = []
-#     for i, row in enumerate(ds):
-#         # choose the first evidence doc_text if present
-#         context = None
-#         if row.get("evidence"):
-#             ev = row["evidence"][0]
-#             context = ev.get("doc_text") or ""
-#         if not context:
-#             context = row.get("search_results", [{}])[0].get("description", "")
-#         out.append({
-#             "id": f"trivia_{i}",
-#             "question": row["question"],
-#             "context": context,
-#             "answers": [row["answer"]["value"]] if row.get("answer") else []
-#         })
-#     return out
-
-
 def load_covid_qa(n=300):
     ds = load_dataset("covid_qa_deepset", split="train")
     ds = ds.shuffle(seed=42).select(range(min(n, len(ds))))
@@ -67,10 +31,6 @@ def load_all(dspecs):
         n = int(spec.get("subset_size", 200))
         if name == "covid_qa_deepset":
             rows = load_covid_qa(n)
-        # elif name == "trivia_qa":
-        #     rows = load_trivia_qa_rc(n)
-        # elif name == "covid_qa_deepset":
-        #     rows = load_covid_qa(n)
         else:
             raise ValueError(f"Unknown dataset {name}")
 
